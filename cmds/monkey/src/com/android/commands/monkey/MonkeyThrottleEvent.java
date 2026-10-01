@@ -34,7 +34,8 @@ public class MonkeyThrottleEvent extends MonkeyEvent {
     }  
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
 
         if (verbose > 1) {
             Logger.out.println("Sleeping for " + mThrottle + " milliseconds");

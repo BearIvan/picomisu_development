@@ -69,5 +69,6 @@ public abstract class MonkeyEvent {
      * @return INJECT_SUCCESS if it goes through, and INJECT_FAIL if it fails
      *         in the case of exceptions, return its corresponding error code
      */
-    public abstract int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose);
+    public abstract int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId);
 }

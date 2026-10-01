@@ -129,7 +129,8 @@ public class MonkeyPowerEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         if (mPowerLogTag != null) {
             if (mPowerLogTag.compareTo(TEST_SEQ_BEGIN) == 0) {
                 bufferLogEvent(mPowerLogTag, Build.FINGERPRINT);

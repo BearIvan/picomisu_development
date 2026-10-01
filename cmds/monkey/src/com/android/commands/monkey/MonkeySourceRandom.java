@@ -104,6 +104,8 @@ public class MonkeySourceRandom implements MonkeyEventSource {
 
     private boolean mKeyboardOpen = false;
 
+    private int mDisplay = 0;
+
     public static String getKeyName(int keycode) {
         return KeyEvent.keyCodeToString(keycode);
     }
@@ -120,7 +122,8 @@ public class MonkeySourceRandom implements MonkeyEventSource {
     }
 
     public MonkeySourceRandom(Random random, List<ComponentName> MainApps,
-            long throttle, boolean randomizeThrottle, boolean permissionTargetSystem) {
+            long throttle, boolean randomizeThrottle, boolean permissionTargetSystem,
+            int display) {
         // default values for random distributions
         // note, these are straight percentages, to match user input (cmd line args)
         // but they will be converted to 0..1 values before the main loop runs.
@@ -144,6 +147,7 @@ public class MonkeySourceRandom implements MonkeyEventSource {
         mQ = new MonkeyEventQueue(random, throttle, randomizeThrottle);
         mPermissionUtil = new MonkeyPermissionUtil();
         mPermissionUtil.setTargetSystemPackages(permissionTargetSystem);
+        mDisplay = display;
     }
 
     /**
@@ -265,7 +269,7 @@ public class MonkeySourceRandom implements MonkeyEventSource {
      *
      */
     private void generatePointerEvent(Random random, int gesture) {
-        Display display = DisplayManagerGlobal.getInstance().getRealDisplay(Display.DEFAULT_DISPLAY);
+        Display display = DisplayManagerGlobal.getInstance().getRealDisplay(mDisplay);
 
         PointF p1 = randomPoint(random, display);
         PointF v1 = randomVector(random);

@@ -36,7 +36,8 @@ public class MonkeyPermissionEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         IPackageManager pm = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
         int currentUser = ActivityManager.getCurrentUser();
         try {

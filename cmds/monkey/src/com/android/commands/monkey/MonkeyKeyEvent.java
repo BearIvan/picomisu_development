@@ -97,7 +97,8 @@ public class MonkeyKeyEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         if (verbose > 1) {
             String note;
             if (mAction == KeyEvent.ACTION_UP) {
@@ -130,6 +131,7 @@ public class MonkeyKeyEvent extends MonkeyEvent {
                     mRepeatCount, mMetaState, mDeviceId, mScanCode,
                     KeyEvent.FLAG_FROM_SYSTEM, InputDevice.SOURCE_KEYBOARD);
         }
+        keyEvent.setDisplayId(displayId);
         if (!InputManager.getInstance().injectInputEvent(keyEvent,
                 InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_RESULT)) {
             return MonkeyEvent.INJECT_FAIL;

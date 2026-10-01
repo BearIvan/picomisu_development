@@ -120,7 +120,8 @@ public class MonkeyGetAppFrameRateEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         Process p = null;
         BufferedReader result = null;
         String cmd = String.format(GET_APP_FRAMERATE_TMPL, sActivityName);

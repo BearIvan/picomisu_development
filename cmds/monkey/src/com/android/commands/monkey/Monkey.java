@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.IPackageManager;
 import android.content.pm.ResolveInfo;
+import android.hardware.display.DisplayManagerGlobal;
 import android.os.Build;
 import android.os.Debug;
 import android.os.Environment;
@@ -31,6 +32,8 @@ import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.text.TextUtils;
+import android.view.DisplayInfo;
 import android.view.IWindowManager;
 import android.view.Surface;
 
@@ -256,6 +259,8 @@ public class Monkey {
     private MonkeyNetworkMonitor mNetworkMonitor = new MonkeyNetworkMonitor();
 
     private boolean mPermissionTargetSystem = false;
+
+    private int mDisplay = 0;
 
     // information on the current activity.
     public static Intent currentIntent;
@@ -678,7 +683,7 @@ public class Monkey {
                 Logger.out.println("// Seeded: " + mSeed);
             }
             mEventSource = new MonkeySourceRandom(mRandom, mMainApps,
-                    mThrottle, mRandomizeThrottle, mPermissionTargetSystem);
+                    mThrottle, mRandomizeThrottle, mPermissionTargetSystem, mDisplay);
             mEventSource.setVerbose(mVerbose);
             // set any of the factors that has been set
             for (int i = 0; i < MonkeySourceRandom.FACTORZ_COUNT; i++) {
@@ -710,7 +715,7 @@ public class Monkey {
             // Release the rotation lock if it's still held and restore the
             // original orientation.
             new MonkeyRotationEvent(Surface.ROTATION_0, false).injectEvent(
-                mWm, mAm, mVerbose);
+                mWm, mAm, mVerbose, mDisplay);
         }
         mNetworkMonitor.stop();
 
@@ -789,6 +794,19 @@ public class Monkey {
         }
     }
 
+    private int getExtDisplayId() {
+        int[] displayIds = DisplayManagerGlobal.getInstance().getDisplayIds();
+        if (displayIds != null && displayIds.length > 0) {
+            for (int i = 0; i < displayIds.length; i++) {
+                DisplayInfo info = DisplayManagerGlobal.getInstance().getDisplayInfo(displayIds[i]);
+                if (info != null && TextUtils.equals("PvrShellDisplay", info.name)) {
+                    return info.displayId;
+                }
+            }
+        }
+        return -1;
+    }
+
     /**
      * Process the command-line options
      *
@@ -805,7 +823,15 @@ public class Monkey {
             String opt;
             Set<String> validPackages = new HashSet<>();
             while ((opt = nextOption()) != null) {
-                if (opt.equals("-s")) {
+                if (opt.equals("--ext-display")) {
+                    mDisplay = getExtDisplayId();
+                    Logger.err.println("DISPLAY is: " + String.valueOf(mDisplay));
+                    if (mDisplay == -1) {
+                        Logger.err.println("** Error: No extented display is connected. ");
+                        showUsage();
+                        return false;
+                    }
+                } else if (opt.equals("-s")) {
                     mSeed = nextOptionLong("Seed");
                 } else if (opt.equals("-p")) {
                     validPackages.add(nextOptionData());
@@ -1214,7 +1240,7 @@ public class Monkey {
 
                 MonkeyEvent ev = mEventSource.getNextEvent();
                 if (ev != null) {
-                    int injectCode = ev.injectEvent(mWm, mAm, mVerbose);
+                    int injectCode = ev.injectEvent(mWm, mAm, mVerbose, mDisplay);
                     if (injectCode == MonkeyEvent.INJECT_FAIL) {
                         Logger.out.println("    // Injection Failed");
                         if (ev instanceof MonkeyKeyEvent) {
@@ -1479,6 +1505,7 @@ public class Monkey {
         usage.append("              [--bugreport]\n");
         usage.append("              [--periodic-bugreport]\n");
         usage.append("              [--permission-target-system]\n");
+        usage.append("              [--ext-display]\n");
         usage.append("              COUNT\n");
         Logger.err.println(usage.toString());
     }

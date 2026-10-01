@@ -37,7 +37,8 @@ public class MonkeyInstrumentationEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         ComponentName cn = ComponentName.unflattenFromString(mRunnerName);
         if (cn == null || mTestCaseName == null)
             throw new IllegalArgumentException("Bad component name");

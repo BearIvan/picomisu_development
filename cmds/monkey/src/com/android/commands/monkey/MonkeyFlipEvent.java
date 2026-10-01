@@ -57,7 +57,8 @@ public class MonkeyFlipEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         if (verbose > 0) {
             Logger.out.println(":Sending Flip keyboardOpen=" + mKeyboardOpen);
         }

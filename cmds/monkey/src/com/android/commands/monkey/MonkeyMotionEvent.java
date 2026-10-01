@@ -147,7 +147,8 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         MotionEvent me = getEvent();
         if ((verbose > 0 && !mIntermediateNote) || verbose > 1) {
             StringBuilder msg = new StringBuilder(":Sending ");
@@ -185,6 +186,7 @@ public abstract class MonkeyMotionEvent extends MonkeyEvent {
             Logger.out.println(msg.toString());
         }
         try {
+            me.setDisplayId(displayId);
             if (!InputManager.getInstance().injectInputEvent(me,
                     InputManager.INJECT_INPUT_EVENT_MODE_WAIT_FOR_RESULT)) {
                 return MonkeyEvent.INJECT_FAIL;

@@ -32,7 +32,8 @@ public class MonkeyNoopEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         // No real work to do
         if (verbose > 1) {
             Logger.out.println("NOOP");

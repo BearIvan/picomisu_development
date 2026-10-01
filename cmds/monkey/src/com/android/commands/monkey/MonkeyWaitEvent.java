@@ -32,7 +32,8 @@ public class MonkeyWaitEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         if (verbose > 1) {
             Logger.out.println("Wait Event for " + mWaitTime + " milliseconds");
         }

@@ -17,6 +17,7 @@
 package com.android.commands.monkey;
 
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.IActivityManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -54,7 +55,8 @@ public class MonkeyActivityEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         Intent intent = getEvent();
         if (verbose > 0) {
             Logger.out.println(":Switch: " + intent.toUri(0));
@@ -67,8 +69,10 @@ public class MonkeyActivityEvent extends MonkeyEvent {
         }
 
         try {
-            iam.startActivityAsUser(null, null, intent, null, null, null, 0,
-                    0, null, null, ActivityManager.getCurrentUser());
+            ActivityOptions options = ActivityOptions.makeBasic();
+            options.setLaunchDisplayId(displayId);
+            iam.startActivity(null, null, intent, null, null, null, 0,
+                    0, null, options.toBundle());
         } catch (RemoteException e) {
             Logger.err.println("** Failed talking with activity manager!");
             return MonkeyEvent.INJECT_ERROR_REMOTE_EXCEPTION;

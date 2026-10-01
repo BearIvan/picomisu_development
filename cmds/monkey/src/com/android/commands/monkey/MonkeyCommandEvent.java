@@ -34,7 +34,8 @@ public class MonkeyCommandEvent extends MonkeyEvent {
     }
 
     @Override
-    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose) {
+    public int injectEvent(IWindowManager iwm, IActivityManager iam, int verbose,
+            int displayId) {
         if (mCmd != null) {
             //Execute the shell command
             try {
